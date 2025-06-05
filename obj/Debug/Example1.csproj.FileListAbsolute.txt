@@ -1,0 +1,61 @@
+C:\Users\carlo\Downloads\Example1\Example1\obj\Debug\Example1.csproj.AssemblyReference.cache
+C:\Users\carlo\Downloads\Example1\Example1\bin\Debug\Proj\proj.db
+C:\Users\carlo\Downloads\Example1\Example1\bin\Debug\geomutil_lib.dll
+C:\Users\carlo\Downloads\Example1\Example1\bin\Debug\geomutil_libx64.dll
+C:\Users\carlo\Downloads\Example1\Example1\bin\Debug\Proj\x64\proj_9_0.dll
+C:\Users\carlo\Downloads\Example1\Example1\bin\Debug\Proj\x64\sqlite3.dll
+C:\Users\carlo\Downloads\Example1\Example1\bin\Debug\Proj\x86\proj_9_0.dll
+C:\Users\carlo\Downloads\Example1\Example1\bin\Debug\Proj\x86\sqlite3.dll
+C:\Users\carlo\Downloads\Example1\Example1\bin\Debug\world_adm0.dbf
+C:\Users\carlo\Downloads\Example1\Example1\bin\Debug\world_adm0.shp
+C:\Users\carlo\Downloads\Example1\Example1\bin\Debug\world_adm0.shx
+C:\Users\carlo\Downloads\Example1\Example1\bin\Debug\world_adm0.prj
+C:\Users\carlo\Downloads\Example1\Example1\bin\Debug\Example1.exe.config
+C:\Users\carlo\Downloads\Example1\Example1\bin\Debug\Example1.exe
+C:\Users\carlo\Downloads\Example1\Example1\bin\Debug\Example1.pdb
+C:\Users\carlo\Downloads\Example1\Example1\bin\Debug\EGIS.Controls.dll
+C:\Users\carlo\Downloads\Example1\Example1\bin\Debug\EGIS.Projections.dll
+C:\Users\carlo\Downloads\Example1\Example1\bin\Debug\EGIS.ShapeFileLib.dll
+C:\Users\carlo\Downloads\Example1\Example1\bin\Debug\EGIS.Controls.xml
+C:\Users\carlo\Downloads\Example1\Example1\bin\Debug\EGIS.Projections.xml
+C:\Users\carlo\Downloads\Example1\Example1\bin\Debug\EGIS.ShapeFileLib.xml
+C:\Users\carlo\Downloads\Example1\Example1\obj\Debug\Example1.MainForm.resources
+C:\Users\carlo\Downloads\Example1\Example1\obj\Debug\Example1.Properties.Resources.resources
+C:\Users\carlo\Downloads\Example1\Example1\obj\Debug\Example1.TestUserControl.resources
+C:\Users\carlo\Downloads\Example1\Example1\obj\Debug\Example1.csproj.GenerateResource.cache
+C:\Users\carlo\Downloads\Example1\Example1\obj\Debug\Example1.csproj.CoreCompileInputs.cache
+C:\Users\carlo\Downloads\Example1\Example1\obj\Debug\Example1.csproj.Up2Date
+C:\Users\carlo\Downloads\Example1\Example1\obj\Debug\Example1.exe
+C:\Users\carlo\Downloads\Example1\Example1\obj\Debug\Example1.pdb
+C:\Users\carlo\Downloads\Example1\Example1\obj\Debug\Example1.Form1.resources
+C:\Users\mrg8\Desktop\Example1 conref\bin\Debug\geomutil_lib.dll
+C:\Users\mrg8\Desktop\Example1 conref\bin\Debug\geomutil_libx64.dll
+C:\Users\mrg8\Desktop\Example1 conref\bin\Debug\world_adm0.dbf
+C:\Users\mrg8\Desktop\Example1 conref\bin\Debug\world_adm0.shp
+C:\Users\mrg8\Desktop\Example1 conref\bin\Debug\world_adm0.shx
+C:\Users\mrg8\Desktop\Example1 conref\bin\Debug\world_adm0.prj
+C:\Users\mrg8\Desktop\Example1 conref\bin\Debug\Proj\proj.db
+C:\Users\mrg8\Desktop\Example1 conref\bin\Debug\Proj\x64\proj_9_0.dll
+C:\Users\mrg8\Desktop\Example1 conref\bin\Debug\Proj\x64\sqlite3.dll
+C:\Users\mrg8\Desktop\Example1 conref\bin\Debug\Proj\x86\proj_9_0.dll
+C:\Users\mrg8\Desktop\Example1 conref\bin\Debug\Proj\x86\sqlite3.dll
+C:\Users\mrg8\Desktop\Example1 conref\bin\Debug\Example1.exe.config
+C:\Users\mrg8\Desktop\Example1 conref\bin\Debug\Example1.exe
+C:\Users\mrg8\Desktop\Example1 conref\bin\Debug\Example1.pdb
+C:\Users\mrg8\Desktop\Example1 conref\bin\Debug\EGIS.Controls.dll
+C:\Users\mrg8\Desktop\Example1 conref\bin\Debug\EGIS.Projections.dll
+C:\Users\mrg8\Desktop\Example1 conref\bin\Debug\EGIS.ShapeFileLib.dll
+C:\Users\mrg8\Desktop\Example1 conref\bin\Debug\EGIS.Controls.xml
+C:\Users\mrg8\Desktop\Example1 conref\bin\Debug\EGIS.Projections.xml
+C:\Users\mrg8\Desktop\Example1 conref\bin\Debug\EGIS.ShapeFileLib.xml
+C:\Users\mrg8\Desktop\Example1 conref\obj\Debug\Example1.csproj.AssemblyReference.cache
+C:\Users\mrg8\Desktop\Example1 conref\obj\Debug\Example1.exe.config
+C:\Users\mrg8\Desktop\Example1 conref\obj\Debug\Example1.Form1.resources
+C:\Users\mrg8\Desktop\Example1 conref\obj\Debug\Example1.MainForm.resources
+C:\Users\mrg8\Desktop\Example1 conref\obj\Debug\Example1.Properties.Resources.resources
+C:\Users\mrg8\Desktop\Example1 conref\obj\Debug\Example1.TestUserControl.resources
+C:\Users\mrg8\Desktop\Example1 conref\obj\Debug\Example1.csproj.GenerateResource.cache
+C:\Users\mrg8\Desktop\Example1 conref\obj\Debug\Example1.csproj.CoreCompileInputs.cache
+C:\Users\mrg8\Desktop\Example1 conref\obj\Debug\Example1.csproj.Up2Date
+C:\Users\mrg8\Desktop\Example1 conref\obj\Debug\Example1.exe
+C:\Users\mrg8\Desktop\Example1 conref\obj\Debug\Example1.pdb
