@@ -1,4 +1,4 @@
-﻿namespace Example1
+﻿namespace SDCO
 {
     partial class Form1
     {

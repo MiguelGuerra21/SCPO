@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace Example1
+namespace SDCO
 {
     static class Program
     {

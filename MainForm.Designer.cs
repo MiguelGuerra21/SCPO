@@ -1,4 +1,4 @@
-namespace Example1
+namespace SDCO
 {
     partial class MainForm
     {
@@ -139,7 +139,8 @@ namespace Example1
 			this.sfMap1.MouseWheelZoomMode = EGIS.Controls.MouseWheelZoomMode.Default;
 			this.sfMap1.Name = "sfMap1";
 			this.sfMap1.PanSelectMode = EGIS.Controls.PanSelectMode.Pan;
-			this.sfMap1.RenderQuality = EGIS.ShapeFileLib.RenderQuality.Auto;
+			this.sfMap1.AutoSize = true;
+            this.sfMap1.RenderQuality = EGIS.ShapeFileLib.RenderQuality.High;
 			this.sfMap1.Size = new System.Drawing.Size(783, 401);
 			this.sfMap1.TabIndex = 0;
 			this.sfMap1.UseMemoryStreams = false;

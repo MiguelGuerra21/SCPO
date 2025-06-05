@@ -23,7 +23,7 @@ using System.Windows.Forms;
  * Copyright: Easy GIS .NET 2010
  *
  */
-namespace Example1
+namespace SDCO
 {
     public partial class MainForm : Form
     {
@@ -63,10 +63,30 @@ namespace Example1
             // read the shapefile dbf field names and set the shapefiles's RenderSettings
             // to use the first field to label the shapes.
             EGIS.ShapeFileLib.ShapeFile sf = this.sfMap1[0];
+            // Itera sobre cada forma del shapefile
+            for (int i = 0; i < sfMap1[0].RecordCount; i++)
+            {
+                // Obtén los valores de los atributos para el shape actual
+                string[] recordAttributes = sfMap1[0].GetAttributeFieldValues(i);
+
+                // Ejemplo de cómo puedes acceder a un campo específico, por ejemplo, el primer atributo.
+                string estado = recordAttributes[18].Trim(); // Ajusta esto a tu campo de estado real
+                if (estado.Equals("REMATADO"))
+                {
+                    sf.RenderSettings.FillColor = Color.FromArgb(128, Color.Green);
+                }
+                else if (estado.Equals("SIN ESTADO"))
+                {
+                    sf.RenderSettings.FillColor = Color.FromArgb(128, Color.Yellow);
+                }
+                else
+                {
+                    sf.RenderSettings.FillColor = Color.FromArgb(128, Color.White);
+                }
+            }
             sf.RenderSettings.FieldName = sf.RenderSettings.DbfReader.GetFieldNames()[0];
             sf.RenderSettings.UseToolTip = true;
             sf.RenderSettings.ToolTipFieldName = sf.RenderSettings.FieldName;
-         //   sf.RenderSettings.PointImageSymbol = "diamond.png";
             sf.RenderSettings.IsSelectable = true;
 
             this.sfMap1.MapCoordinateReferenceSystem = sf.CoordinateReferenceSystem;
@@ -95,7 +115,6 @@ namespace Example1
                     sfMap1[0].SelectRecord(recordIndex, true);
                     sfMap1.Refresh(true);
                 }
-
                 if (displayAttributesOnClickToolStripMenuItem.Checked)
                 {
                     string[] recordAttributes = sfMap1[0].GetAttributeFieldValues(recordIndex);
@@ -161,6 +180,7 @@ namespace Example1
                     Console.Out.WriteLine("Error drawing bounding box: " + ex.Message);
 
                 }
+                
             }
         }
 
