@@ -40,14 +40,6 @@
             // listBox1
             // 
             this.listBox1.FormattingEnabled = true;
-            this.listBox1.Items.AddRange(new object[] {
-            "Fif: 302",
-            "CT: 3",
-            "Tipo: 1V2",
-            "Código: TRK-231",
-            "Coordenadas...",
-            "",
-            "Bla, bla, bla"});
             this.listBox1.Location = new System.Drawing.Point(12, 29);
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(158, 303);
@@ -63,7 +55,7 @@
             this.label1.Text = "Propiedades";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
-            // label2
+            // Inicio montaje
             // 
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(176, 12);
@@ -89,7 +81,7 @@
             this.dateTimePicker2.TabIndex = 5;
             this.dateTimePicker2.ValueChanged += new System.EventHandler(this.dateTimePicker2_ValueChanged);
             // 
-            // label3
+            // Fin montaje
             // 
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(176, 65);
@@ -107,6 +99,7 @@
             this.button1.TabIndex = 6;
             this.button1.Text = "Cerrar";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.CloseDialog_Button);
             // 
             // Form1
             // 

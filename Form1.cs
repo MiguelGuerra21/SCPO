@@ -22,11 +22,27 @@ namespace Example1
         {
 
         }
+        public string[] ItemsListBox
+        {
+            set
+            {
+                if (value != null)
+                {
+                    this.listBox1.Items.AddRange(value);
+                }
+            }
+
+        }
 
         private void label3_Click(object sender, EventArgs e)
         {
 
         }
+        private void CloseDialog_Button(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
 
         private void dateTimePicker2_ValueChanged(object sender, EventArgs e)
         {

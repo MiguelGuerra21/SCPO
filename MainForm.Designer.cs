@@ -112,7 +112,8 @@ namespace Example1
 			// 
 			// displayAttributesOnClickToolStripMenuItem
 			// 
-			this.displayAttributesOnClickToolStripMenuItem.CheckOnClick = true;
+			this.displayAttributesOnClickToolStripMenuItem.Checked = true;
+            this.displayAttributesOnClickToolStripMenuItem.CheckOnClick = true;
 			this.displayAttributesOnClickToolStripMenuItem.Name = "displayAttributesOnClickToolStripMenuItem";
 			this.displayAttributesOnClickToolStripMenuItem.Size = new System.Drawing.Size(280, 22);
 			this.displayAttributesOnClickToolStripMenuItem.Text = "Display Attributes On Click";
