@@ -77,6 +77,8 @@ namespace Example1
         }
 
         private int selectedRecordIndex = -1;
+
+
         
         private void sfMap1_MouseDown(object sender, MouseEventArgs e)
         {
@@ -101,17 +103,15 @@ namespace Example1
                     StringBuilder sb = new StringBuilder();
                     for (int n = 0; n < attributeNames.Length; ++n)
                     {
-                        sb.Append(attributeNames[n]).Append(": ").AppendLine(recordAttributes[n].Trim());
+                        sb.Append(attributeNames[n]).Append(": ").AppendLine(recordAttributes[n].Trim()).Append(";");
                     }
-                    if (recordAttributes[0].Trim() == "302")
-                    {
-                        //sb.Append("Finalizado").Append(": ").AppendLine("SI");
-                        //sb.Append("Tiempo empleado").Append(": ").AppendLine("3:54");
-                        Form1 frm1 = new Form1();
-                        frm1.ShowDialog();
-                    }
-                    else
-                       MessageBox.Show(this, sb.ToString(), "¿Iniciar Montaje?", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
+
+                    string[] datos = sb.ToString().Split(';');
+                    Form1 frm1 = new Form1();
+                    frm1.ItemsListBox = datos;
+                    frm1.ShowDialog();
+                    //else
+                    //   MessageBox.Show(this, sb.ToString(), "¿Iniciar Montaje?", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
                 }
 
             }
@@ -122,41 +122,49 @@ namespace Example1
         private void sfMap1_Paint(object sender, PaintEventArgs e)
         {
             DrawCursorCrosshair(e.Graphics);
+            selectedRecordIndex = -1;
 
             //using (Pen pen = new Pen(SystemColors.ControlDark, 1))
             //{
             //    e.Graphics.DrawRectangle(pen, 0, 0, sfMap1.ClientSize.Width-1, sfMap1.ClientSize.Height-1);
             //}
-
-            if (this.selectedRecordIndex >= 0 && drawBoundingBoxOfSelectedRecordToolStripMenuItem.Checked)
+            if (this.selectedRecordIndex >= 0 && drawBoundingBoxOfSelectedRecordToolStripMenuItem.Checked && selectedRecordIndex < sfMap1[0].RecordCount)
             {
-                RectangleD bounds = sfMap1[0].GetShapeBoundsD(selectedRecordIndex);
-
-                using (EGIS.Projections.ICoordinateTransformation transform = EGIS.Projections.CoordinateReferenceSystemFactory.Default.CreateCoordinateTrasformation(sfMap1[0].CoordinateReferenceSystem, sfMap1.MapCoordinateReferenceSystem))
+                try
                 {
-                    bounds = transform.Transform(bounds);
-                }
+                    RectangleD bounds = sfMap1[0].GetShapeBoundsD(selectedRecordIndex);
 
-                //Console.Out.WriteLine("bounds = " + bounds);
-               // ReadOnlyCollection<PointD[]> geometry = sfMap1[0].GetShapeDataD(selectedRecordIndex);
-               // OutputRecordGeometry(geometry);
-
-                var pt1 = sfMap1.GisPointToPixelCoord(new PointD(bounds.Left, bounds.Bottom));
-                var pt2 = sfMap1.GisPointToPixelCoord(new PointD(bounds.Right, bounds.Top));
-               // Console.Out.WriteLine("pt1 = " + pt1);
-               // Console.Out.WriteLine("pt2 = " + pt2);
-                Rectangle r = Rectangle.FromLTRB(pt1.X, pt1.Y, pt2.X, pt2.Y);
-                if (r.Left > -1000 && r.Left < this.Width && r.Width < 10000)
-                {
-                    using (Pen p = new Pen(Color.Red))
+                    using (EGIS.Projections.ICoordinateTransformation transform = EGIS.Projections.CoordinateReferenceSystemFactory.Default.CreateCoordinateTrasformation(sfMap1[0].CoordinateReferenceSystem, sfMap1.MapCoordinateReferenceSystem))
                     {
-                        e.Graphics.DrawRectangle(p, r);
+                        bounds = transform.Transform(bounds);
+                    }
+
+                    //Console.Out.WriteLine("bounds = " + bounds);
+                    // ReadOnlyCollection<PointD[]> geometry = sfMap1[0].GetShapeDataD(selectedRecordIndex);
+                    // OutputRecordGeometry(geometry);
+
+                    var pt1 = sfMap1.GisPointToPixelCoord(new PointD(bounds.Left, bounds.Bottom));
+                    var pt2 = sfMap1.GisPointToPixelCoord(new PointD(bounds.Right, bounds.Top));
+                    // Console.Out.WriteLine("pt1 = " + pt1);
+                    // Console.Out.WriteLine("pt2 = " + pt2);
+                    Rectangle r = Rectangle.FromLTRB(pt1.X, pt1.Y, pt2.X, pt2.Y);
+                    if (r.Left > -1000 && r.Left < this.Width && r.Width < 10000)
+                    {
+                        using (Pen p = new Pen(Color.Red))
+                        {
+                            e.Graphics.DrawRectangle(p, r);
+                        }
                     }
                 }
+                catch (Exception ex)
+                {
+                    Console.Out.WriteLine("Error drawing bounding box: " + ex.Message);
 
+                }
             }
-
         }
+
+        
 
         private void OutputRecordGeometry(IList<PointD[]> geometry)
         {
