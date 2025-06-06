@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
@@ -57,7 +58,7 @@ namespace SDCO
         }
 
         //Save the current's Shapefile information
-        
+
         private string currentShapefilePath;
         private string currentShapefileName;
         private string currentShapefileNameNoExtension;
@@ -119,12 +120,12 @@ namespace SDCO
         private int selectedRecordIndex = -1;
 
 
-        
+
         private void sfMap1_MouseDown(object sender, MouseEventArgs e)
         {
             if (sfMap1.ShapeFileCount == 0) return;
             int recordIndex = sfMap1.GetShapeIndexAtPixelCoord(0, e.Location, 8);
-           
+
             if (recordIndex >= 0)
             {
                 this.selectedRecordIndex = recordIndex;
@@ -154,7 +155,7 @@ namespace SDCO
                 }
 
             }
-           
+
 
         }
 
@@ -200,11 +201,11 @@ namespace SDCO
                     Console.Out.WriteLine("Error drawing bounding box: " + ex.Message);
 
                 }
-                
+
             }
         }
 
-        
+
 
         private void OutputRecordGeometry(IList<PointD[]> geometry)
         {
@@ -228,10 +229,10 @@ namespace SDCO
                 sb.AppendLine();
             }
             Console.Out.WriteLine(sb.ToString());
-            Console.Out.WriteLine("minX:" +  minX);
-            Console.Out.WriteLine("minY:" +  minY);
-            Console.Out.WriteLine("maxX:" +  maxX);
-            Console.Out.WriteLine("maxY:" +  maxY);
+            Console.Out.WriteLine("minX:" + minX);
+            Console.Out.WriteLine("minY:" + minY);
+            Console.Out.WriteLine("maxX:" + maxX);
+            Console.Out.WriteLine("maxY:" + maxY);
 
 
 
@@ -261,112 +262,128 @@ namespace SDCO
             {
                 g.Transform = transform;
             }
-            
+
         }
         private Point currentMousePoint;
         // Fix for CS1519 and IDE1007: Declare the field with a valid type and initialize it if necessary.
-        
-		private void sfMap1_MouseMove(object sender, MouseEventArgs e)
-		{
-            currentMousePoint = e.Location;
-            sfMap1.Refresh();            
-		}
 
-		private void sfMap1_MouseLeave(object sender, EventArgs e)
-		{
+        private void sfMap1_MouseMove(object sender, MouseEventArgs e)
+        {
+            currentMousePoint = e.Location;
+            sfMap1.Refresh();
+        }
+
+        private void sfMap1_MouseLeave(object sender, EventArgs e)
+        {
             currentMousePoint = Point.Empty;
             sfMap1.Refresh();
         }
 
-		private void selectRecordOnClickToolStripMenuItem_Click(object sender, EventArgs e)
-		{
+        private void selectRecordOnClickToolStripMenuItem_Click(object sender, EventArgs e)
+        {
 
-		}
+        }
 
-		private void MainForm_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-		{
-            
-		}
+        private void MainForm_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
 
-		private void MainForm_KeyDown(object sender, KeyEventArgs e)
-		{
+        }
+
+        private void MainForm_KeyDown(object sender, KeyEventArgs e)
+        {
             //this will disable control/shift mouse selection
             //if (e.Control || e.Shift) e.Handled = true;
-		}
+        }
 
-		private void saveImageToolStripMenuItem_Click(object sender, EventArgs e)
-		{
+        private void saveImageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             using (var bm = this.sfMap1.GetBitmap())
             {
                 Console.Out.WriteLine("Size:" + sfMap1.Size);
                 Console.Out.WriteLine("clientSize:" + sfMap1.ClientSize);
                 Console.Out.WriteLine("bm.Size:" + bm.Size);
-                bm.Save(@"c:\temp\test.png", System.Drawing.Imaging.ImageFormat.Png);
+                if (!Directory.Exists(".\\Capturas"))
+                {
+                    // Si no existe, crea el directorio
+                    Directory.CreateDirectory(".\\Capturas");
+                    Console.WriteLine("Directorio capturas creado");
+
+                }
+                string nombreCapturaFecha = ".\\Capturas\\Captura" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".png";
+                bm.Save(nombreCapturaFecha, System.Drawing.Imaging.ImageFormat.Png);
             }
-		}
+        }
+
+        private const string filesPath = ".\\Shapefiles";
 
         private void SaveShapefile_Click(object sender, EventArgs e)
         {
             if (isOpenShapefile)
             {
-                try
+                // Mostrar el diálogo de "Guardar como" para que el usuario seleccione la ruta y el nombre del archivo
+                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
                 {
-                    Console.Out.WriteLine("Saving shapefile: " + currentShapefileName + " to: " + currentShapefilePath);
-                    ShapeFile sf = new ShapeFile(currentShapefileName);
-                    DbfReader dbfReader = new DbfReader(currentShapefileNameNoExtension + ".dbf");
+                    saveFileDialog.Filter = "Shapefile (.shp)|*.shp"; // Solo archivos .shp
+                    saveFileDialog.Title = "Guardar Shapefile";
 
-                    //create a new ShapeFileWriter
-                    ShapeFileWriter sfw;
-                    sfw = ShapeFileWriter.CreateWriter(".", "ShapefileWriter", sf.ShapeType,
-                    dbfReader.DbfRecordHeader.GetFieldDescriptions());
-                    try
+                    // Si el usuario selecciona un archivo y hace clic en "Guardar"
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
                     {
-                        dbfReader.DbfRecordHeader.GetFieldDescriptions();
-                        // Get a ShapeFileEnumerator from the shapefile
-                        // and read each record
+                        string outputPath = saveFileDialog.FileName;
+                        string readerPath = Path.Combine(filesPath, currentShapefileNameNoExtension);
+
+                        Console.Out.WriteLine("Saving shapefile: " + currentShapefileName + " to: " + outputPath);
+
+                        ShapeFile sf = new ShapeFile(readerPath);
+                        DbfReader dbfReader = new DbfReader(readerPath);
+                        string noPathName = Path.GetFileNameWithoutExtension(saveFileDialog.FileName);
+                        string baseDir = Path.GetDirectoryName(saveFileDialog.FileName);
+                        ShapeFileWriter sfw = ShapeFileWriter.CreateWriter(baseDir, noPathName, ShapeType.Polygon,
+                            dbfReader.DbfRecordHeader.GetFieldDescriptions());
+
                         ShapeFileEnumerator sfEnum = sf.GetShapeFileEnumerator();
-                        while (sfEnum.MoveNext())
+                        try
                         {
-                            // get the raw point data
-                            PointD[] points = sfEnum.Current[0];
-                            //get the DBF record
-                            string[] fields = dbfReader.GetFields(sfEnum.CurrentShapeIndex);
-                            //check whether to add the record to the new shapefile.
-                            //(in this example, field zero contains the road type)
-                            if (string.Compare(fields[0].Trim(), currentShapefileNameNoExtension, true) == 0)
+                            // Iterar a través de las formas en el shapefile
+                            while (sfEnum.MoveNext())
                             {
+                                // Obtener los puntos de la forma
+                                PointD[] points = sfEnum.Current[0];
+                                // Obtener el registro DBF
+                                string[] fields = dbfReader.GetFields(sfEnum.CurrentShapeIndex);
                                 sfw.AddRecord(points, points.Length, fields);
                             }
                         }
-                    }
-                    finally
-                    {
-                        //close the shapefile, shapefilewriter and dbfreader
-                        sfw.Close();
-                        sf.Close();
-                        dbfReader.Close();
-                    }
-                    MessageBox.Show(this, "El archivo " + this.currentShapefileName + " ha sido guardado correctamente");
+                        finally
+                        {
+                            // Cerrar todos los archivos después de procesar
+                            sfw.Close();
+                            sf.Close();
+                            dbfReader.Close();
+                        }
 
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(this, "Error : " + ex.Message);
+                        // Confirmación al usuario
+                        if (File.Exists(outputPath))
+                        {
+                            MessageBox.Show(this, "El archivo " + this.currentShapefileName + " ha sido guardado correctamente en : " + outputPath);
+                        }
+                    }
                 }
             }
-            
         }
-        
+
+
+
 
 
         private void sfMap1_SelectedRecordsChanged(object sender, EventArgs e)
-		{
-            if (sfMap1.ShapeFileCount > 0 && sfMap1[0].SelectedRecordIndices.Count==0)
+        {
+            if (sfMap1.ShapeFileCount > 0 && sfMap1[0].SelectedRecordIndices.Count == 0)
             {
                 this.selectedRecordIndex = -1;
             }
-		}
+        }
 
-		
-	}
+
+    }
 }
