@@ -33,6 +33,8 @@ namespace SDCO
 
         }
 
+        private bool isOpenShapefile = false;
+
         private void miOpen_Click(object sender, EventArgs e)
         {
             if (ofdShapefile.ShowDialog(this) == DialogResult.OK)
@@ -41,13 +43,24 @@ namespace SDCO
                 {
                     OpenShapefile(ofdShapefile.FileName);
                     this.toolStripStatusLabel1.Text = ofdShapefile.FileName;
+                    this.isOpenShapefile = true;
+                    this.saveShapefileToolStripMenuItem.Enabled = true;
+                    Console.Out.WriteLine("Opened shapefile? " + this.isOpenShapefile);
                 }
                 catch (Exception ex)
                 {
+                    this.isOpenShapefile = false;
+                    Console.Out.WriteLine("Opened shapefile? " + this.isOpenShapefile);
                     MessageBox.Show(this, "Error : " + ex.Message);
                 }
             }
         }
+
+        //Save the current's Shapefile information
+        
+        private string currentShapefilePath;
+        private string currentShapefileName;
+        private string currentShapefileNameNoExtension;
 
         private void OpenShapefile(string path)
         {
@@ -92,7 +105,14 @@ namespace SDCO
             this.sfMap1.MapCoordinateReferenceSystem = sf.CoordinateReferenceSystem;
 
             //select the first record
-            // sf.SelectRecord(0, true);
+            sf.SelectRecord(0, true);
+
+            //save current shapefile name
+            this.currentShapefilePath = path;
+            this.currentShapefileName = System.IO.Path.GetFileName(path);
+            this.currentShapefileNameNoExtension = System.IO.Path.GetFileNameWithoutExtension(path);
+            Console.Out.WriteLine("Opened shapefile: " + currentShapefileName + " on : " + currentShapefilePath);
+
 
         }
 
@@ -243,9 +263,9 @@ namespace SDCO
             }
             
         }
-
         private Point currentMousePoint;
-
+        // Fix for CS1519 and IDE1007: Declare the field with a valid type and initialize it if necessary.
+        
 		private void sfMap1_MouseMove(object sender, MouseEventArgs e)
 		{
             currentMousePoint = e.Location;
@@ -285,7 +305,61 @@ namespace SDCO
             }
 		}
 
-		private void sfMap1_SelectedRecordsChanged(object sender, EventArgs e)
+        private void SaveShapefile_Click(object sender, EventArgs e)
+        {
+            if (isOpenShapefile)
+            {
+                try
+                {
+                    Console.Out.WriteLine("Saving shapefile: " + currentShapefileName + " to: " + currentShapefilePath);
+                    ShapeFile sf = new ShapeFile(currentShapefileName);
+                    DbfReader dbfReader = new DbfReader(currentShapefileNameNoExtension + ".dbf");
+
+                    //create a new ShapeFileWriter
+                    ShapeFileWriter sfw;
+                    sfw = ShapeFileWriter.CreateWriter(".", "ShapefileWriter", sf.ShapeType,
+                    dbfReader.DbfRecordHeader.GetFieldDescriptions());
+                    try
+                    {
+                        dbfReader.DbfRecordHeader.GetFieldDescriptions();
+                        // Get a ShapeFileEnumerator from the shapefile
+                        // and read each record
+                        ShapeFileEnumerator sfEnum = sf.GetShapeFileEnumerator();
+                        while (sfEnum.MoveNext())
+                        {
+                            // get the raw point data
+                            PointD[] points = sfEnum.Current[0];
+                            //get the DBF record
+                            string[] fields = dbfReader.GetFields(sfEnum.CurrentShapeIndex);
+                            //check whether to add the record to the new shapefile.
+                            //(in this example, field zero contains the road type)
+                            if (string.Compare(fields[0].Trim(), currentShapefileNameNoExtension, true) == 0)
+                            {
+                                sfw.AddRecord(points, points.Length, fields);
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        //close the shapefile, shapefilewriter and dbfreader
+                        sfw.Close();
+                        sf.Close();
+                        dbfReader.Close();
+                    }
+                    MessageBox.Show(this, "El archivo " + this.currentShapefileName + " ha sido guardado correctamente");
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(this, "Error : " + ex.Message);
+                }
+            }
+            
+        }
+        
+
+
+        private void sfMap1_SelectedRecordsChanged(object sender, EventArgs e)
 		{
             if (sfMap1.ShapeFileCount > 0 && sfMap1[0].SelectedRecordIndices.Count==0)
             {
