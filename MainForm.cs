@@ -1,4 +1,6 @@
 using EGIS.ShapeFileLib;
+using EGIS.Controls;
+using EGIS.Projections;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,6 +10,7 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 /*
  * 
@@ -68,6 +71,9 @@ namespace SDCO
             // clear any shapefiles the map is currently displaying
             this.sfMap1.ClearShapeFiles();
             this.selectedRecordIndex = -1;
+            ShapeFile shapeFile = new ShapeFile(path);
+            this.sfMap1.Refresh();
+
 
             // open the shapefile passing in the path, display name of the shapefile and
             // the field name to be used when rendering the shapes (we use an empty string
@@ -77,6 +83,7 @@ namespace SDCO
             // read the shapefile dbf field names and set the shapefiles's RenderSettings
             // to use the first field to label the shapes.
             EGIS.ShapeFileLib.ShapeFile sf = this.sfMap1[0];
+            
             // Itera sobre cada forma del shapefile
             for (int i = 0; i < sfMap1[0].RecordCount; i++)
             {
@@ -140,6 +147,7 @@ namespace SDCO
                 {
                     string[] recordAttributes = sfMap1[0].GetAttributeFieldValues(recordIndex);
                     string[] attributeNames = sfMap1[0].GetAttributeFieldNames();
+                    //sfMap1[0].
                     StringBuilder sb = new StringBuilder();
                     for (int n = 0; n < attributeNames.Length; ++n)
                     {
@@ -149,7 +157,16 @@ namespace SDCO
                     string[] datos = sb.ToString().Split(';');
                     Form1 frm1 = new Form1();
                     frm1.ItemsListBox = datos;
-                    frm1.ShowDialog();
+                    if (frm1.ShowDialog(this) == DialogResult.OK)
+                    {
+                        for (int i = 0; i < frm1.datosModificados?.Length; i++)
+                        {
+                            frm1.ItemsListBox.SetValue(frm1.datosModificados[i], i);
+                            Console.Out.WriteLine("Item " + i + ": " + frm1.ItemsListBox[i]);
+                            Console.Out.WriteLine("Indice Modificado: " + frm1.datosModificados[i]);
+                        }
+                        
+                    }
                     //else
                     //   MessageBox.Show(this, sb.ToString(), "¿Iniciar Montaje?", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
                 }
@@ -158,6 +175,15 @@ namespace SDCO
 
 
         }
+
+        // Opción para devolver datos modificados
+        //public string[] DatosModificados
+        //{
+        //    get
+        //    {
+        //        return frm1.Items.Cast<string>().ToArray();
+        //    }
+        //}
 
         private void sfMap1_Paint(object sender, PaintEventArgs e)
         {
@@ -349,8 +375,10 @@ namespace SDCO
                             {
                                 // Obtener los puntos de la forma
                                 PointD[] points = sfEnum.Current[0];
-                                // Obtener el registro DBF
+                                // Obtener el registro DBF original
                                 string[] fields = dbfReader.GetFields(sfEnum.CurrentShapeIndex);
+                                //Obtener los campos modificados de memoria
+                                //string[] fields = sfMap1[0].GetAttributeFieldValues(sfEnum.CurrentShapeIndex);
                                 sfw.AddRecord(points, points.Length, fields);
                             }
                         }
@@ -373,7 +401,61 @@ namespace SDCO
         }
 
 
+        private void EditShapefileValuesAndSave(string[] nuevosValores)
+        {
+            if (selectedRecordIndex < 0 || sfMap1.ShapeFileCount == 0) return;
 
+            // Obtener el shapefile actual
+            var shapeFile = sfMap1[0];
+
+            // Obtener nombres de campos
+            string[] fieldNames = shapeFile.GetAttributeFieldNames();
+
+            // Validar que coincidan los campos con los nuevos valores
+            if (nuevosValores.Length != fieldNames.Length)
+            {
+                MessageBox.Show("Número de valores no coincide con los campos del shapefile.");
+                return;
+            }
+
+            // Ruta original del DBF
+            string originalDbfPath = Path.ChangeExtension(shapeFile.FilePath, ".dbf");
+
+            // Crear una ruta temporal para guardar el nuevo DBF
+            string outputDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modificados");
+            Directory.CreateDirectory(outputDir);
+            string tempDbfPath = Path.Combine(outputDir, Path.GetFileName(originalDbfPath));
+
+            // Crear lector y escritor de DBF
+            using (DbfReader dbfReader = new DbfReader(originalDbfPath))
+            using (DbfWriter dbfWriter = new DbfWriter(tempDbfPath, dbfReader.DbfRecordHeader.GetFieldDescriptions()))
+            {
+                int totalRecords = nuevosValores.Length;
+
+                for (int i = 0; i < totalRecords; i++)
+                {
+                    string[] recordValues = dbfReader.GetFields(i);
+
+                    // Modificar solo el registro seleccionado
+                    if (i == selectedRecordIndex)
+                    {
+                        recordValues = nuevosValores;
+                    }
+
+                    dbfWriter.WriteRecord(recordValues);
+                }
+
+                dbfWriter.Close();
+            }
+
+            // Sobrescribir el .dbf del shapefile actual si quieres reemplazar el contenido cargado
+            File.Copy(tempDbfPath, originalDbfPath, overwrite: true);
+
+            // Refrescar mapa para reflejar cambios 
+            sfMap1.Refresh();
+
+            MessageBox.Show("Valores modificados y actualizados correctamente.\nArchivo temporal guardado en:\n" + tempDbfPath);
+        }
 
 
         private void sfMap1_SelectedRecordsChanged(object sender, EventArgs e)
