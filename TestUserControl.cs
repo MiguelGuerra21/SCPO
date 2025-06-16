@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Example1
+namespace SDCO
 {
 	public partial class TestUserControl : UserControl
 	{
